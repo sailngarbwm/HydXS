@@ -22,14 +22,13 @@ from 05_HydXS_attachModelResults import *
 
 ## parameters ------------------------------------------------------------------------------------------------------
 #01: data input
-input_type = 'DF'
 point_df = XSdata 
+input_type = 'DF'
 xy_col = ('POINT_X','POINT_Y')
 z_col = 'POINT_Z'
 xs_id_col = 'x_sec_id'
 xs_order_col = 'x_sec_order'
 riv_centre = 'RivCentre'         #CHANGE: to the name of the variable in your dataset that identifies the x_sec_id that is the centre line ; see additional note above
-ground_truth = False
 #02: pre-processing
 exclude = (239,648)              #CHANGE : identifiers of x_sec_id to be excluded due to anomalies etc; may be empty
 first = 1                        #KEEP / CHANGE : HydXS default is 1 ; may change if you're testing a small subset
@@ -48,7 +47,7 @@ path = "model_outputs/test01/"   #CHANGE : where output CSV are saved
 
 #01: wrangling
 #XSdata1 = wrangle_cross_section(XSdata)
-XSdata1 = wrangle_cross_section( input_type=input_type , point_df=point_df , xy_col=xy_col , z_col=z_col , xs_id_col=xs_id_col , xs_order_col=xs_order_col , riv_centre=riv_centre , ground_truth=ground_truth )
+XSdata1 = wrangle_cross_section( point_df=point_df , input_type=input_type , xy_col=xy_col , z_col=z_col , xs_id_col=xs_id_col , xs_order_col=xs_order_col , riv_centre=riv_centre )
 
 #02: pre-processing
 XSdata2 = preprocess_cross_section( XSdata1 , dR_first=first , dR_last=last , dR_cutoff=True , dR_centre=centre , dR_window=window , dR_excl=exclude )

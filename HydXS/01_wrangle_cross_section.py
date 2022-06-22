@@ -4,17 +4,13 @@
 # wrangle_cross_section.py
 #
 # "wrangle_cross_section" function used in step 1 HydXS 
-# input: *****
+# input: *****to fill in
 # output: a dataframe with XS (many rows per XS) + x_sec_id , x_sec_order , POINT_X , POINT_Y , POINT_Z + XY point + DZ point + Distance 
-#
-# example, used in HydXS: 
-#   XSdata1 = wrangle_cross_section(XSdata)
 #
 ###############################################################################################################################
 
 
 # importing libraries etc  ----------------------------------------------------------------------------------------------------
-from ast import Or
 import numpy as np
 import pandas as pd
 import geopandas as gpd
@@ -26,8 +22,8 @@ from shapely.geometry import Point
 
 
 # high-level wrangle_cross_section function ---------------------------------------------------------------------------------
-# # input_type : DF (dataframe) / GDF (geopandas dataframe) / CSV (path to CSV) / GIS (path to GIS)
 # # point_df is the cross-section dataframe, OR geopandas dataframe, OR path to a csv or GIS file
+# # input_type : DF (dataframe) / GDF (geopandas dataframe) / CSV (path to CSV) / GIS (path to GIS)
 # # xy_col : names of X and Y columns
 # #   if dataframe, is a tuple of the names of the X and Y columns 
 # #   if geopandas, then name of the XY 'geometry' column
@@ -37,10 +33,10 @@ from shapely.geometry import Point
 # # xs_order_col : name of column that sorts the points of the cross-section in order 
 # # riv_centre : name of column that is TRUE/1 at river centre (only one value/row per cross-section)
 # #           OR path to shapefile if 'point_df' is geopandas or path
-# # ground_truth : optional : name of column with true/false indicating if point is in river channel
-# #           OR path to shapefile if 'point_df' is geopandas or path 
 
-def wrangle_cross_section( input_type='DF' , point_df , xy_col=('POINT_X','POINT_Y') , z_col='POINT_Z' , xs_id_col='x_sec_id' , xs_order_col='x_sec_order' , riv_centre='RivCentre' , ground_truth=False ):
+def wrangle_cross_section( point_df , input_type='DF' , 
+                            xy_col=('POINT_X','POINT_Y') , z_col='POINT_Z' , 
+                            xs_id_col='x_sec_id' , xs_order_col='x_sec_order' , riv_centre='RivCentre'):
     
     # check consistency of data input
     if (input_type=='DF' and not type(point_df)==DataFrame) or (input_type=='GDF' and not type(point_df)==GeoDataFrame) or (input_type=='CSV' and not (type(point_df)==str and point_df[-3:].upper()=="CSV")) or (input_type=='GIS' and not (type(point_df)==str and point_df[-3:].upper()=="GIS")):
@@ -48,16 +44,17 @@ def wrangle_cross_section( input_type='DF' , point_df , xy_col=('POINT_X','POINT
 
     # bring in data
     if input_type in ('DF','GDF'):
-        xs = pd.dataframe(point_df )
+        xs = pd.dataframe(point_df)
     elif input_type == 'CSV':
-        pass
+        pass #to do
     elif input_type == 'GIS':
-        pass 
+        pass #to do
 
     xs["POINT_Z"] = z_col 
     xs["x_sec_id"] = xs_id_col
     xs["x_sec_order"] = xs_order_col
     xs["RivCentre"] = riv_centre
+#not complete if shape file
 
     # add XY point geometry
     if input_type == 'GDF':
@@ -77,9 +74,6 @@ def wrangle_cross_section( input_type='DF' , point_df , xy_col=('POINT_X','POINT
         xs.loc[xs[xs_id_col] == i,'Distance'] = xs_i['Distance'].to_list()
     # add Distance-Depth points
     xs["PointDZ"] = xs.apply(make_xs_point_distZ,axis=1)
-
-# add part for Ground_Truth 
-
 
     return xs['x_sec_id','x_sec_order','POINT_X','POINT_Y','POINT_Z','PointXY','Distance','PointDZ','RivCentre']
 #end wrangle_cross_section
