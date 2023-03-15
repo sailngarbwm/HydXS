@@ -1,0 +1,16 @@
+name: hydxs-env
+channels:
+  - defaults
+dependencies:
+  - rpy2
+  - r
+  - python=3.7
+  - matplotlib
+  - pandas
+  - scipy
+  - typer
+  - nomkl
+  - pip: 
+    - shapely
+    - geopandas
+

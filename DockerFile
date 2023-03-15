@@ -1,0 +1,11 @@
+FROM continuumio/miniconda3
+
+WORKDIR /app
+
+COPY . . 
+
+RUN conda env update -f environment.yml 
+RUN python setup.py install
+
+CMD ['/bin/sh']
+
