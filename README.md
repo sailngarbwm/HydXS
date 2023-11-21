@@ -60,4 +60,51 @@ results = run_hydxs("data/small_test_ds.csv", out_data_path = 'data/outputs', xs
 
 ```
 
+The docstring is here:
+
+```
+Main function to run the entire pipeline on a set of cross section point data.
+
+Args:
+        point_df (geopandas.GeoDataFrame | pandas.DataFrame): input dataframe or GeoDataFrame with points along cross sections
+        input_type (str, optional): type of Dataframe, "DF" if Dataframe, "GDF" if GeoDataFrame. Defaults to "DF".
+        xy_col (tuple[str, str], optional): tuple of x and y column names. Defaults to ("POINT_X", "POINT_Y").
+        z_col (str, optional): name of column that holds elevation data for each point. Defaults to "POINT_Z".
+        xs_id_col (str, optional): Name of column that holds an integer cross section ID. Defaults to "x_sec_id".
+        xs_order_col (str, optional): Name of column that holds the position of that point in the order of the cross section. Defaults to "x_sec_order".
+        riv_centre (str, optional): name of Boolean column, where the point closest to the centre of the river is True. Defaults to "RivCentre".
+        exclude (list[int], optional): list of cross section ID's to skip. Defaults to ().
+        first (int, optional): First cross section ID to run. Defaults to 1.
+        last (int, optional): Last cross section ID to run. Defaults to 648.
+        window (int, optional): Window in map units to cut out from other minimums far away from . Defaults to 10.
+        nVsteps (int, optional): Number of vertical steps to iterate over starting at minVdep. Defaults to 200.
+        minVdep (float, optional): Minimum height above river centre (the thalweg) where the first hydraulic depth is measured. Defaults to 0.2.
+        maxr (int, optional): Maximum number of sub runs for each cross section per run. Defaults to 3.
+        nruns (int, optional): Number of runs over entire set of cross sections. Defaults to 11.
+        out_data_path (str | Path, optional): data path where intermediate outputs are stored. Defaults to "model_outputs/test01/".
+
+    Returns:
+        pandas.DataFrame: output aggregate dataframe, it will have a value for each point, though some of them are cross section aggregated values.
+
+            Note that it aggregates all 11 runs, and only shows either the mode (most often bankfull value arrived at) or the mean
+            Output columns:
+                x_sec_id - Cross section id
+                x_sec_order - Order of point in the cross section
+                POINT_X - x coordinate
+                POINT_Y - y coordinate
+                POINT_Z - z coordinate
+                PointXY - XY shapely point
+                Distance - Distance along cross section at that point
+                PointDZ - Shapely point of (Distance, Z)
+                RivCentre - True fals as whether at the centre of the river
+                riverMin - Minimum elevation in the river
+                inXS - True if point is in the Bankfull Cross section (includes point next to bankfull)
+                InRiver - True if point is in the river (doesn't include bankfull point)
+                BankFull - Bankfull width
+                BankLeft - Distance along cross section where first non river point is on left
+                BankRight - Distance along cross section where first non river point is on right
+                CountAtBankFull - Number of runs that produces this bankfull measurement (only usefull for Mode outputs)
+
+```
+
 there are lots more optional arguments you can edit specified in the HydXS/run_HydXS file

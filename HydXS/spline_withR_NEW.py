@@ -19,12 +19,12 @@
 #
 # 1. change maximum number of iterations for newtonraphson from 100 to 20
 #    if a XS will not converge in 20, it won't in 100, and it was time-consuming
-#    . original line (row 106) : newtonraphson <- function (ftn, x0, tol = 0.000000001, max.iter = 100) 
+#    . original line (row 106) : newtonraphson <- function (ftn, x0, tol = 0.000000001, max.iter = 100)
 #    . amended code: newtonraphson <- function (ftn, x0, tol = 0.000000001, max.iter = 200)
-# 
+#
 # 2. removed printing to reduce the size of the log
 #
-# 3. introduced error trapping, so that a run over many XS wouldn't fail if one XS failed 
+# 3. introduced error trapping, so that a run over many XS wouldn't fail if one XS failed
 #    . original code (row 166+)
 #     .     if type(out) == robjects.vectors.FloatVector:
 #     .         return [out[0]] , [out[1]], spar[0]
@@ -33,7 +33,7 @@
 #     .             return list(out.rx(True,1)) , list(out.rx(True,2)) , spar[0]
 #     .         else:
 #     .             return [x[-1]],[y[-1]] , spar[0]
-#    . amended code: 
+#    . amended code:
 #     .    try:
 #     .        out,spar,fit = definitiveFunc(x,y)
 #     .        fitList = list(fit)
@@ -45,10 +45,10 @@
 #     .            else:
 #     .                return [x[-1]],[y[-1]] , spar[0], fitList
 #     .    except :
-#     .        return [None] , [None], spar[0], [None] 
+#     .        return [None] , [None], spar[0], [None]
 #
 # 4. pull out fit information from this module to understand nature of smoothing (used in graphing in deRosa_modelling.py)
-#    
+#
 ###############################################################################################################################
 
 
@@ -67,12 +67,13 @@ import rpy2.robjects as robjects
 import numpy as np
 
 
-def runAlg(depts,HydDept):
+def runAlg(depts, HydDept):
     HydDept = np.array(HydDept)
     depts = np.array(depts)
     y = robjects.FloatVector(HydDept)
     x = robjects.FloatVector(depts)
-    robjects.r('''
+    robjects.r(
+        """
             definitiveFunc <- function(x,y)
             {            
             cv.smooth.spline <- function (x, y, nfold = 10, ngrid = 100, 
@@ -204,24 +205,24 @@ def runAlg(depts,HydDept):
             return(list(out, cv$spar1se, fit$y))   
             }
             
-            ''')
-    
-    
-    definitiveFunc = robjects.globalenv['definitiveFunc']
-    
+            """
+    )
+
+    definitiveFunc = robjects.globalenv["definitiveFunc"]
+
     try:
-        out,spar,fit = definitiveFunc(x,y)
+        out, spar, fit = definitiveFunc(x, y)
         fitList = list(fit)
         if type(out) == robjects.vectors.FloatVector:
-            return [out[0]] , [out[1]], spar[0], fitList
+            return [out[0]], [out[1]], spar[0], fitList
         else:
             if len(out) > 0:
-                return list(out.rx(True,1)) , list(out.rx(True,2)) , spar[0] , fitList
+                return list(out.rx(True, 1)), list(out.rx(True, 2)), spar[0], fitList
             else:
-                return [x[-1]],[y[-1]] , spar[0], fitList
+                return [x[-1]], [y[-1]], spar[0], fitList
     except Exception as e:
-      print(e)
-      return [None] , [None], spar[0], [None]
-    
-    
-#end
+        print(e)
+        return [None], [None], spar[0], [None]
+
+
+# end

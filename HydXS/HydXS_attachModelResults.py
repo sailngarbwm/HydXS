@@ -17,42 +17,46 @@
 
 import pandas as pd
 
-def attach_HydXS ( xs , results  ) :
-    
-    for i in range(1,max(xs["x_sec_id"])+1):
+
+def attach_HydXS(xs, results):
+    for i in range(1, max(xs["x_sec_id"]) + 1):
         print(i)
         subset = xs[xs["x_sec_id"] == i].reset_index()
-        
-        #initialise
+
+        # initialise
         left = None
         right = None
         bankfull = None
         count = None
-        #from HydXS results
-        if not len(results[results["CrossSection"]==i])==0 :
-            left = float(results["LeftOutput"][results["CrossSection"]==i])
-            right = float(results["RightOutput"][results["CrossSection"]==i])
-            bankfull = float(results["BankFullOutput"][results["CrossSection"]==i])
-            count = int(results["CountatBankFull"][results["CrossSection"]==i])
+        # from HydXS results
+        if not len(results[results["CrossSection"] == i]) == 0:
+            left = float(results["LeftOutput"][results["CrossSection"] == i])
+            right = float(results["RightOutput"][results["CrossSection"] == i])
+            bankfull = float(results["BankFullOutput"][results["CrossSection"] == i])
+            count = int(results["CountatBankFull"][results["CrossSection"] == i])
 
-        #initialise
+        # initialise
         subset["InRiver"] = False
-        subset["BankFull"] = bankfull 
-        subset["BankLeft"] = left 
-        subset["BankRight"] = right 
+        subset["BankFull"] = bankfull
+        subset["BankLeft"] = left
+        subset["BankRight"] = right
         subset["CountAtBankFull"] = count
-        #set true if between left and right boundaries
-        for j in range(0,len(subset)):
-            if not (left==None or right==None): 
-                if subset.loc[j,"Distance"] > left and subset.loc[j,"Distance"] < right:
-                    subset.loc[j,"InRiver"] = True
+        # set true if between left and right boundaries
+        for j in range(0, len(subset)):
+            if not (left == None or right == None):
+                if (
+                    subset.loc[j, "Distance"] > left
+                    and subset.loc[j, "Distance"] < right
+                ):
+                    subset.loc[j, "InRiver"] = True
             else:
                 subset["CountAtBankFull"] = 0
-                
-        if i == 1 :
+
+        if i == 1:
             output = subset
         else:
-            output = output.append(subset,ignore_index=True)
+            output = output.append(subset, ignore_index=True)
     return output
 
-#end attach_HydXS
+
+# end attach_HydXS

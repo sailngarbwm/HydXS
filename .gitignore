@@ -163,3 +163,6 @@ data
 
 .vscode/*
 *.egg-info
+
+# test output data if the delete fails
+test_data/test_model_outs/*
