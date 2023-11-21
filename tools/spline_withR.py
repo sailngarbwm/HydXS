@@ -14,12 +14,14 @@ import rpy2.robjects as robjects
 
 import numpy as np
 
-def runAlg(depts,HydDept):
+
+def runAlg(depts, HydDept):
     HydDept = np.array(HydDept)
     depts = np.array(depts)
     y = robjects.FloatVector(HydDept)
     x = robjects.FloatVector(depts)
-    robjects.r('''
+    robjects.r(
+        """
             definitiveFunc <- function(x,y)
             {            
             cv.smooth.spline <- function (x, y, nfold = 10, ngrid = 100, 
@@ -156,19 +158,17 @@ def runAlg(depts,HydDept):
             return(list(out,cv$spar1se))
             }
             
-            ''')
-    
-    
-    definitiveFunc = robjects.globalenv['definitiveFunc']
-    #converto gli array python in vettori R
-    out,spar = definitiveFunc(x,y)
-    
+            """
+    )
+
+    definitiveFunc = robjects.globalenv["definitiveFunc"]
+    # converto gli array python in vettori R
+    out, spar = definitiveFunc(x, y)
+
     if type(out) == robjects.vectors.FloatVector:
-        return [out[0]] , [out[1]], spar[0]
+        return [out[0]], [out[1]], spar[0]
     else:
         if len(out) > 0:
-            return list(out.rx(True,1)) , list(out.rx(True,2)) , spar[0]
+            return list(out.rx(True, 1)), list(out.rx(True, 2)), spar[0]
         else:
-            return [x[-1]],[y[-1]] , spar[0]
-    
-    
+            return [x[-1]], [y[-1]], spar[0]
