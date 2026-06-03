@@ -59,7 +59,10 @@ def calcoutputs(dataset, num_runs, window=0.05):
 
         else:
             # initially set to mode of bankfull calcs
-            bank_mode = statistics.mode(group_bank)
+            try:
+                bank_mode = statistics.mode(group_bank)
+            except:
+                bank_mode = statistics.median(group_bank)
             dataset.loc[i, "BankFullType"] = "mode"
             dataset.loc[i, "BankFullOutput"] = bank_mode
             dataset.loc[i, "CountatBankFull"] = sum(

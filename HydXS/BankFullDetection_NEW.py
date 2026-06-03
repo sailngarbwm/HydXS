@@ -48,7 +48,7 @@
 #      : this has been corrected by "allow_multichannel=False" and only choosing the river containing the minimum depth
 #        inserting the below code (after original code row 107)
 #        .  if allow_multichannel ==False:
-#        .      if wetArea.type == 'MultiPolygon':
+#        .      if wetArea.geom_type == 'MultiPolygon':
 #        .          for poly in wetArea:
 #        .              if poly.bounds[1] == minY:
 #        .                  wetArea = poly
@@ -200,7 +200,7 @@ def calc_hyd_outputs(pointList, dept, allow_multichannel=False):
     wetWTLine = wdepLine.intersection(polygonXS)
     # new HydXS code
     if allow_multichannel == False:
-        if wetArea.type == "MultiPolygon":
+        if wetArea.geom_type == "MultiPolygon":
             for poly in wetArea:
                 if poly.bounds[1] == minY:
                     wetArea = poly
@@ -238,7 +238,7 @@ def mainFun(
         wetWTLine = wdepLine.intersection(polygonXS)
         # new HydXS code
         if allow_multichannel == False:
-            if wetArea.type == "MultiPolygon":
+            if wetArea.geom_type == "MultiPolygon":
                 try:
                     for poly in list(wetArea.geoms):
                         if poly.bounds[1] == minY:
@@ -279,7 +279,7 @@ def mainFun(
     wetArea = polygonXS.intersection(wdep)
     boundsOK = ()
     Area = 0
-    if wetArea.type == "MultiPolygon":
+    if wetArea.geom_type == "MultiPolygon":
         nchannel = str(len(list(wetArea.geoms)))
         for wetPolygon in list(wetArea.geoms):
             # if wetPolygon.area > Area:       #original deRosa code

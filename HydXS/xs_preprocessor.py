@@ -37,8 +37,7 @@ from shapely.geometry import Point
 # high-level preprocessing function  -------------------------------------------------------------------------------------------
 def preprocess_cross_section(
     xs,
-    dR_first,
-    dR_last,
+   xs_list,
     dR_cutoff=True,
     dR_centre="RivCentre",
     dR_window=10,
@@ -48,7 +47,7 @@ def preprocess_cross_section(
     xs_df = pd.DataFrame(xs)
     dataset2 = pd.DataFrame()
     # cycle through each XS
-    for i in range(dR_first, dR_last + 1):
+    for n,i in enumerate(xs_list):
         temp = xs_df[xs_df["x_sec_id"] == i].reset_index()
         if len(temp) == 0 or i in dR_excl:
             pass
@@ -60,10 +59,10 @@ def preprocess_cross_section(
                 # pass through whole XS untampered
                 temp["inXS"] = True
                 newdata = temp
-            if i == dR_first:
+            if n == 0:
                 dataset2 = newdata
             else:
-                dataset2 = dataset2.append(newdata, ignore_index=True)
+                dataset2 = pd.concat([dataset2, newdata], ignore_index=True)
     return dataset2
 
 

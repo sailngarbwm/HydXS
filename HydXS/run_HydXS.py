@@ -63,8 +63,8 @@ def run_hydxs(
     riv_centre: str = "RivCentre",
     # 02: pre-processing
     exclude: list[int] = (),
-    first: int = 1,
-    last: int = 648,
+    first: int = None,
+    last: int = None,
     window: int = 10,
     # 03: modelling
     nVsteps: int = 200,
@@ -118,6 +118,11 @@ def run_hydxs(
     """
     if isinstance(point_df, (str, Path)) == True:
         point_df = pd.read_csv(point_df)
+        
+    if not first or not last:
+        xs_list = list(point_df[xs_id_col].unique())
+    else:
+        xs_list = list(range(first,last))
 
     if isinstance(out_data_path, (str)):
         out_data_path = Path(out_data_path)
@@ -136,10 +141,8 @@ def run_hydxs(
     # 02: pre-processing
     XSdata2 = preprocess_cross_section(
         XSdata1,
-        dR_first=first,
-        dR_last=last,
+        xs_list = xs_list,
         dR_cutoff=True,
-        dR_centre=riv_centre,
         dR_window=window,
         dR_excl=exclude,
     )
@@ -147,8 +150,7 @@ def run_hydxs(
     # 03: model runs
     XSdata3 = HydXS_run(
         XSdata2,
-        first,
-        last,
+        xs_list,
         num_runs=nruns,
         output_path=out_data_path,
         maxrun=maxr,
@@ -159,9 +161,9 @@ def run_hydxs(
     # 04: model output
     XSdata4 = calcoutputs(XSdata3, nruns)
 
-    # 05: attach to original XS dataset
-    XSdata5 = attach_HydXS(XSdata2, XSdata4)
-    return XSdata5
+    # # 05: attach to original XS dataset
+    # XSdata5 = attach_HydXS(XSdata2, XSdata4, xs_list)
+    return XSdata4, XSdata2
 
 
 ## end -------------------------------------------------------------------------------------------------------------

@@ -51,8 +51,7 @@ from .BankFullDetection_NEW import mainFun as HydXS
 # results are then combined and exported into csv using HydXS_output.py
 def HydXS_run(
     data,
-    a,
-    b,
+    xs_list,
     num_runs,
     output_path=None,
     boundary=False,
@@ -64,19 +63,19 @@ def HydXS_run(
         print("run: ", k)
         # variable names
         run_name = "run_" + str(k)
-        csv_name = output_path / ("HydXS_run" + str(k) + ".csv")
+        # csv_name = output_path / ("HydXS_run" + str(k) + ".csv")
         bankfull_name = "bankfull_" + str(k)
         left_name = "left_" + str(k)
         right_name = "right_" + str(k)
         # individual run
         model = HydXS_perXS(
-            data, a, b, allow_boundary=boundary, maxrun=maxrun, steps=steps, minV=minV
+            data, xs_list, allow_boundary=boundary, maxrun=maxrun, steps=steps, minV=minV
         )
         dtemp = pd.DataFrame(model)
         dtemp[bankfull_name] = round(dtemp.BankFull, 2)
         dtemp[left_name] = round(dtemp.LeftDistance, 2)
         dtemp[right_name] = round(dtemp.RightDistance, 2)
-        dtemp.to_csv(csv_name, index=False)
+        # dtemp.to_csv(csv_name, index=False)
         dtemp = dtemp.drop(
             columns=[
                 "BankFull",
@@ -107,10 +106,10 @@ def HydXS_run(
 # OUTPUT : dataframe for all XSs in the single run, one row per XS
 #    CrossSection / BankFull / LeftDistance / RightDistance / nChannels / spar / runs
 def HydXS_perXS(
-    full_dataset, a, b, allow_boundary=False, maxrun=3, steps=200, minV=0.1, plot=False
+    full_dataset, xs_list, allow_boundary=False, maxrun=3, steps=200, minV=0.1, plot=False
 ):
     output = pd.DataFrame()
-    for i in range(a, b + 1):
+    for i in xs_list:
         print(i)
         subset = full_dataset[
             (full_dataset["x_sec_id"] == i) & (full_dataset["inXS"] == True)

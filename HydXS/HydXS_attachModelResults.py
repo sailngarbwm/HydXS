@@ -18,8 +18,8 @@
 import pandas as pd
 
 
-def attach_HydXS(xs, results):
-    for i in range(1, max(xs["x_sec_id"]) + 1):
+def attach_HydXS(xs, results, xs_list):
+    for n,i in enumerate(xs_list):
         print(i)
         subset = xs[xs["x_sec_id"] == i].reset_index()
 
@@ -30,10 +30,10 @@ def attach_HydXS(xs, results):
         count = None
         # from HydXS results
         if not len(results[results["CrossSection"] == i]) == 0:
-            left = float(results["LeftOutput"][results["CrossSection"] == i])
-            right = float(results["RightOutput"][results["CrossSection"] == i])
-            bankfull = float(results["BankFullOutput"][results["CrossSection"] == i])
-            count = int(results["CountatBankFull"][results["CrossSection"] == i])
+            left = float(results["LeftOutput"][results["CrossSection"] == i].item())
+            right = float(results["RightOutput"][results["CrossSection"] == i].item())
+            bankfull = float(results["BankFullOutput"][results["CrossSection"] == i].item())
+            count = int(results["CountatBankFull"][results["CrossSection"] == i].item())
 
         # initialise
         subset["InRiver"] = False
@@ -52,10 +52,10 @@ def attach_HydXS(xs, results):
             else:
                 subset["CountAtBankFull"] = 0
 
-        if i == 1:
+        if n == 0:
             output = subset
         else:
-            output = output.append(subset, ignore_index=True)
+            output = pd.concat([output, subset], ignore_index=True)
     return output
 
 

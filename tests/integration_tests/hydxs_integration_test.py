@@ -29,7 +29,7 @@ def test_001_run_basic_test(get_example_data: pd.DataFrame, setup_and_remove_dat
         get_example_data,
         exclude=(),
         first=1,
-        last=1,
+        last=2,
         out_data_path="test_data/test_model_outs",
     )
     assert out["BankFull"].max() == 4.9

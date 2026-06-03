@@ -164,7 +164,7 @@ def mainFun(pointList, nVsteps=100, minVdep=1, Graph=0):
     wetArea = polygonXS.intersection(wdep)
     boundsOK = ()
     Area = 0
-    if wetArea.type is "MultiPolygon":
+    if wetArea.geom_type is "MultiPolygon":
         nchannel = str(len(wetArea))
         for wetPolygon in wetArea:
             if wetPolygon.area > Area:
@@ -189,7 +189,7 @@ def mainFun(pointList, nVsteps=100, minVdep=1, Graph=0):
         plot_line(ax, bankfullLine, "#0000F5")  # plot hor line of bankfull
         # ~ plot_line(ax,terraceLine,'#FFE066')           # plot hor line of terrace
         ax.set_title("Cross Section")
-        if wetArea.type is "MultiPolygon":
+        if wetArea.geom_type is "MultiPolygon":
             for wetPolygon in wetArea:
                 patch = PolygonPatch(
                     wetPolygon, fc="#00FFCC", ec="#B8B8B8", alpha=0.5, zorder=2
